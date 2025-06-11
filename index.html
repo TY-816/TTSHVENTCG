@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>
-   TTSH CG-CMB-RTS-001&002
+   Ventilation Referral Decision Tool
   </title>
 <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=swap" rel="stylesheet"/>
 <script src="https://unpkg.com/lucide@latest">
@@ -80,7 +80,7 @@
 <h2>
 <i data-lucide="stethoscope">
 </i>
-    TTSH CG-CMB-RTS-001&002
+    Ventilation Referral Tool
    </h2>
 <label for="department">
     Primary Team:
@@ -373,7 +373,7 @@
     const models = {
       Resmed: ["Lumis series", "Stellar series", "Astral series", "Airsense series", "Aircurves series", "AirStart 10"],
       Philips: ["TRILOGY Series", "A30/A40", "BIPAP ST series / AVAPS", "Dreamstation BiPAP series", "Dreamstation Auto CPAP/ CPAP Pro", "Dreamstation Go"],
-      Breas: ["VIVO (1/2/3/30/40/45/50/55/60/65)", "iSLEEP 22/25", "iSLEEP 20+/20i"],
+      Breas: ["VIVO 1/2/30", "VIVO 3/40/45/50/60", "iSLEEP 22/25", "iSLEEP 20+/20i"],
       Lowenstein: ["Prisma SMART"],
       Transcend: ["365 MiniCPAP Auto"]
     };
@@ -445,11 +445,16 @@
       mepilexMsg = "Full face mask selected. Please use Mepilex (unless patient refuses).";
     }
 
-    if (ownVent === "yes" && brand && model) {
-      if (noBatteryModels.includes(model)) {
+if (ownVent === "yes" && brand && model) {
+      if (pmRequiredNoBatteryModels.includes(model)) {
+        deviceMsg = "This model requires Indemnity form, valid PM/EST, and BME check.";
+        if (acuity !== "green") {
+          deviceMsg += "<br><span style='color:red;font-weight:bold;'>⚠️ WARNING: This model lacks internal battery. Please switch to battery-supported ventilator, or transfer patient to ACA/HDU/ICU to prevent risk during power failure.</span>";
+        }
+      } else if (noBatteryModels.includes(model)) {
         deviceMsg = "This model requires Indemnity form. No PM/EST/BME check needed.";
         if (acuity !== "green") {
-          deviceMsg += "<span style='color:red;font-weight:bold;'>⚠️ WARNING: This model lacks internal battery. Please switch to battery-supported ventilator, or transfer patient to ACA/HDU/ICU to prevent risk during power failure.</span>";
+          deviceMsg += "<br><span style='color:red;font-weight:bold;'>⚠️ WARNING: This model lacks internal battery. Please switch to battery-supported ventilator, or transfer patient to ACA/HDU/ICU to prevent risk during power failure.</span>";
         }
       } else {
         deviceMsg = "This model requires Indemnity form and PM/EST/BME machine check.";
@@ -468,7 +473,17 @@
     }
   }
 
-  
+      const pmRequiredNoBatteryModels = [
+      "A30/A40",
+      "BIPAP ST series / AVAPS",
+      "Dreamstation BiPAP series",
+      "Lumis series",
+      "Aircurves series",
+      "VIVO 1/2/30",
+      "iSLEEP 22/ 25",
+      "iSLEEP 20+/ 20i"
+    ];
+
     const noBatteryModels = [
       "Airsense series",
       "AirStart 10",
